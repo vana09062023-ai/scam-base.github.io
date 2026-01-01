@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16" data-aos="zoom-in">
+        <h1 class="font-cyber text-5xl md:text-7xl mb-4 text-white">SCAM<span class="text-red-600">.</span>WATCH</h1>
+        <div class="max-w-xl mx-auto mb-10">
+            <input type="text" id="liveSearch" placeholder="Живой поиск..."
+                   class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-red-600 transition text-white">
+        </div>
+        <button onclick="document.getElementById('reportModal').style.display='flex'"
+                class="text-[10px] text-gray-500 hover:text-red-600 uppercase tracking-widest transition">
+            + Сообщить о новом скаме
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="scamGrid">
+        {% for site in sites %}
+        <div class="neon-card p-8 rounded-3xl scam-card" data-aos="fade-up">
+            <div class="flex justify-between mb-6">
+                <span class="text-[9px] bg-red-600 px-2 py-1 rounded font-bold">DETECTED</span>
+                <span class="text-[9px] text-gray-600 uppercase">{{ site.added_by }}</span>
+            </div>
+            <h3 class="text-xl font-bold mb-4 break-all domain-name">{{ site.url }}</h3>
+            <p class="text-gray-400 text-sm leading-relaxed desc-text">{{ site.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="reportModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center p-6 z-50">
+    <div class="neon-card p-10 rounded-[2rem] max-w-md w-full border-red-600/30">
+        <h2 class="font-cyber text-xl mb-6 text-white text-center">Новая жалоба</h2>
+        <form action="/report" method="POST" class="space-y-4">
+            <input type="text" name="url" placeholder="Ссылка на сайт" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none">
+            <textarea name="description" placeholder="Описание" rows="4" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none"></textarea>
+            <div class="flex gap-4">
+                <button type="button" onclick="document.getElementById('reportModal').style.display='none'" class="w-1/2 text-gray-500 uppercase text-[10px] font-bold">Отмена</button>
+                <button class="w-1/2 bg-red-600 py-4 rounded-xl font-bold uppercase text-[10px]">Отправить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('liveSearch').addEventListener('input', function(e) {
+        let q = e.target.value.toLowerCase();
+        document.querySelectorAll('.scam-card').forEach(card => {
+            let text = card.querySelector('.domain-name').innerText.toLowerCase() + card.querySelector('.desc-text').innerText.toLowerCase();
+            card.style.display = text.includes(q) ? 'block' : 'none';
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex justify-center items-center min-h-[70vh]">
+    <div class="glass p-10 rounded-3xl w-full max-w-md shadow-2xl border border-white/20"
+         data-aos="flip-left"
+         data-aos-duration="1000">
+
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-black tracking-tighter text-white">АДМИН-<span class="text-red-500">ПАНЕЛЬ</span></h2>
+            <p class="text-gray-400 text-sm mt-2">Введите данные для управления базой</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="bg-red-500/20 border border-red-500 text-red-200 px-4 py-2 rounded-lg mb-6 text-center text-sm animate-pulse">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="space-y-6">
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2 ml-1">Логин</label>
+                <input type="text" name="username" required
+                       class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all text-white"
+                       placeholder="Scam Site">
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2 ml-1">Пароль</label>
+                <input type="password" name="password" required
+                       class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all text-white"
+                       placeholder="••••••••">
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-900/20 transition-all transform hover:scale-[1.02] active:scale-95">
+                ВОЙТИ В СИСТЕМУ
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('index') }}" class="text-gray-500 hover:text-white text-sm transition">
+                ← Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass {
+        position: relative;
+        overflow: hidden;
+    }
+    .glass::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+        animation: rotate 10s linear infinite;
+        z-index: -1;
+    }
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+{% endblock %}

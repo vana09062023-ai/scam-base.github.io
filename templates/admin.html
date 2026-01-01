@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex justify-between items-center mb-10">
+    <h1 class="font-cyber text-2xl text-white">ADMIN_PANEL</h1>
+    <a href="/logout" class="text-xs text-gray-500 hover:text-red-500">ВЫЙТИ ИЗ СИСТЕМЫ</a>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8">
+    <div class="space-y-6">
+        <div class="neon-card p-6 rounded-3xl">
+            <h3 class="font-cyber text-sm text-red-500 mb-4 uppercase">Добавить сайт</h3>
+            <form action="/add_site" method="POST" class="space-y-4">
+                <input type="text" name="url" placeholder="URL" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white outline-none">
+                <textarea name="description" placeholder="Описание" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white outline-none"></textarea>
+                <button class="w-full bg-red-600 py-3 rounded-xl font-bold text-white">ВНЕСТИ В JSON</button>
+            </form>
+        </div>
+
+        {% if current_user.is_main %}
+        <div class="neon-card p-6 rounded-3xl border-blue-600/30">
+            <h3 class="font-cyber text-sm text-blue-500 mb-4 uppercase">Создать админа</h3>
+            <form action="/create_admin" method="POST" class="space-y-4">
+                <input type="text" name="username" placeholder="Логин" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white">
+                <input type="password" name="password" placeholder="Пароль" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white">
+                <button class="w-full bg-blue-600 py-3 rounded-xl font-bold text-white">СОЗДАТЬ</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="neon-card p-6 rounded-3xl h-64 flex flex-col">
+            <h3 class="font-cyber text-[10px] text-yellow-500 mb-4 uppercase tracking-widest">Последние действия</h3>
+            <div class="overflow-y-auto space-y-2 text-[10px] text-gray-400">
+                {% for log in logs %}
+                <div class="border-b border-white/5 pb-1">
+                    <span class="text-blue-500">{{ log.user }}</span>: {{ log.action }} <span class="text-[8px]">({{ log.time }})</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-8">
+        <div class="neon-card rounded-3xl overflow-hidden">
+            <div class="p-4 bg-white/5 font-cyber text-xs flex justify-between">
+                <span>БАЗА ДАННЫХ (JSON)</span>
+                <span>ВСЕГО: {{ sites|length }}</span>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+                <table class="w-full text-left text-sm">
+                    {% for site in sites %}
+                    <tr class="border-t border-white/5 hover:bg-white/5 transition">
+                        <td class="p-4">
+                            <div class="font-bold text-white">{{ site.url }}</div>
+                            <div class="text-[10px] text-gray-500 truncate max-w-xs">{{ site.description }}</div>
+                        </td>
+                        <td class="p-4 text-right">
+                            <a href="/delete_site/{{ site.id }}" class="text-red-500 text-xs font-bold bg-red-500/10 px-3 py-1 rounded-lg">УДАЛИТЬ</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <div class="neon-card p-6 rounded-3xl">
+            <h3 class="font-cyber text-sm text-purple-500 mb-4 uppercase">Жалобы от пользователей</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for report in reports %}
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/5 relative">
+                    <div class="text-white font-bold text-sm">{{ report.url }}</div>
+                    <p class="text-[11px] text-gray-500 mt-1">{{ report.description }}</p>
+                    <div class="text-[9px] text-gray-600 mt-2 italic">{{ report.time }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
